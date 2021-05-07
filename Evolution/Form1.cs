@@ -141,9 +141,14 @@ namespace Evolution
                 int oldY = i.y;
 
                 if (minRoad == 100)
-                { 
-                    xMin =  random.Next(cols);
-                    yMin = random.Next(rows);
+                {
+                    xMin = (random.Next(0, cols));
+                    if (xMin == i.x)
+                        xMin++;
+                    yMin = (random.Next(0, rows));
+                    if (yMin == i.y)
+                        yMin++;
+
                 }
 
                 if (Math.Abs(xMin-i.x)>Math.Abs(yMin - i.y))
@@ -191,8 +196,8 @@ namespace Evolution
                 overviewView += j.overview;
             }
 
-            label2.Text = "Средн. обзорность: " + (overviewView / item.Count).ToString();
-            label3.Text = "Средн. размножаемость: " + (bornabylityView / item.Count).ToString();
+            label2.Text = "Средн. обзорность: " + (overviewView / item.Count).ToString("F");
+            label3.Text = "Средн. размножаемость: " + (bornabylityView / item.Count).ToString("F");
             
         }
 

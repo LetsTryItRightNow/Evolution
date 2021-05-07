@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 namespace Evolution
 {
      public class Rabbit
-     {
+     { 
          public Random random = new Random();
         public int x;
         public int y;
@@ -23,6 +23,10 @@ namespace Evolution
             y = Y;
             this.overview = overview + random.Next(-1,2);
             this.bornabylity = bornabylity + random.Next(-1, 2);
+            if (bornabylity <= 3)
+                this.bornabylity = 3;
+
+
         }
 
 
