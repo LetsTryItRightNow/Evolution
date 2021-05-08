@@ -14,14 +14,14 @@ namespace Evolution
     {
         private List <Rabbit> item = new List<Rabbit>();
         private List<Rabbit> tempItem;
-        public const int SIZE_SQUARE = 10; //разрешение (иными словами масштаб поля).
+        public  int SIZE_SQUARE = 20; //разрешение (иными словами масштаб поля).
         private const int RABBIT = 15; //не устанавливать меньше 15. индекс кролика на карте
         private Graphics graphics;
         private int [,] field;
         private int cols;
         private int rows;
         Random random = new Random();
-
+        
 
         public Form1()
         {
@@ -31,6 +31,7 @@ namespace Evolution
 
         private void CreateField()
         {
+            SIZE_SQUARE = trackBar2.Value;
             button1.Enabled = true;
             item.Clear();
             pictureBox1.Image = new Bitmap(pictureBox1.Width, pictureBox1.Height);
@@ -43,7 +44,7 @@ namespace Evolution
             {
                 for (int y = 0; y < rows; y++)
                 {
-                    field[x, y] = random.Next(-20, 15); //Второй параметр - плотность травы при создании поля. Неплохо бы вынести потом в отдельную переменную
+                    field[x, y] = random.Next(-20, RABBIT); //Первый параметр - плотность травы при создании поля. Неплохо бы вынести потом в отдельную переменную
                 }
             }
 
@@ -52,7 +53,7 @@ namespace Evolution
                 int a = random.Next(0, cols);
                 int b = random.Next(0, rows);
 
-                Rabbit rabbits = new Rabbit(a, b, 4, 10);
+                Rabbit rabbits = new Rabbit(a, b, 4, 5, 10);
                 field[a, b] = RABBIT;
 
                 item.Add(rabbits);
@@ -93,12 +94,13 @@ namespace Evolution
 
         private void CreateGrace()
         {
-           for (int x = 0; x < cols; x++)
+            int grace = trackBar1.Value;
+            for (int x = 0; x < cols; x++)
             {
                 for (int y = 0; y < rows; y++)
                 {
                     if (field[x, y] != RABBIT  && field[x, y] != 1) // значение ОДИН - трава 
-                        field[x, y] = random.Next(-4000,RABBIT); //второй параметр - плотность роста травы во время эволюции
+                        field[x, y] = random.Next(-100*grace,RABBIT); //второй параметр - плотность роста травы во время эволюции
                                                             //связано с индексом кролика
 
                 }
@@ -121,9 +123,7 @@ namespace Evolution
                     {
                             int col = (i.x + x + cols) % cols;
                             int row = (i.y + y + rows) % rows;
-
-                       // if (col < 0 || row < 0 || col >= cols || row >= rows) break;
-
+                            
                             if (field[col, row] == 1)
                                 road = Math.Abs(i.x - col) + Math.Abs(i.y - row);
                             if (minRoad > road )
@@ -140,65 +140,63 @@ namespace Evolution
                 int oldX = i.x;
                 int oldY = i.y;
 
-                if (minRoad == 100)
+                if (minRoad == 100 || minRoad == 0)
                 {
-                    xMin = (random.Next(0, cols));
-                    if (xMin == i.x)
-                        xMin++;
-                    yMin = (random.Next(0, rows));
-                    if (yMin == i.y)
-                        yMin++;
-
+                    xMin = random.Next(0, cols);
+                    if (xMin == i.x) xMin++;
+                    yMin = random.Next(0, rows);
+                    if (yMin == i.y) yMin++;
                 }
 
                 if (Math.Abs(xMin-i.x)>Math.Abs(yMin - i.y))
                 {
-                    
                     i.x += (xMin - i.x) / Math.Abs(xMin-i.x);   // пытается делить на нуль !!!! исправить.
                 } 
                 else
                 {
-                    
                     i.y += (yMin - i.y) / Math.Abs(yMin - i.y); // пытается делить на нуль !!!! исправить.
                 }
 
                 if (field[i.x, i.y] == 1)
-                    i.energy += 1;
+                    i.energy -= 1;
+
                 if (field[i.x, i.y] == RABBIT)
                 {
                     i.x = oldX;
                     i.y = oldY;
-                    i.moving += 1;
+                    i.move += 1;
                 }
                     
-                i.moving -= 1;
+                i.move -= 1;
                 field[i.x, i.y] = RABBIT;
             }
 
             tempItem = new List<Rabbit>(item);
             float bornabylityView = 0;
             float overviewView = 0;
+            float movingView = 0;
             foreach (var j in tempItem)
             {
-                if (j.moving < 0)
+                if (j.move < 0)
                 {
                     item.Remove(j);
                     field[j.x, j.y] = 0;
                 }
                 //j.energy += 1;
-                if (j.energy >= j.bornabylity)
+                if (j.energy <= j.bornabylity)
                 {
-                    j.energy = 0;
-                    item.Add(new Rabbit(j.x, j.y, j.overview, j.bornabylity));
+                    j.energy = 20;
+                    item.Add(new Rabbit(j.x, j.y, j.overview, j.bornabylity, j.moving));
                 }
 
                 bornabylityView += j.bornabylity;
                 overviewView += j.overview;
+                movingView += j.moving;
             }
 
             label2.Text = "Средн. обзорность: " + (overviewView / item.Count).ToString("F");
             label3.Text = "Средн. размножаемость: " + (bornabylityView / item.Count).ToString("F");
-            
+            label7.Text = "Средн. жизнь: " + (movingView  / item.Count ).ToString("F");
         }
 
         private void Form1_Load(object sender, EventArgs e)
@@ -214,7 +212,9 @@ namespace Evolution
         private void timer1_Tick(object sender, EventArgs e)
         {
             NextGeneration();
+            timer1.Interval = trackBar3.Value;
             bCreate.Enabled = false;
+            trackBar2.Enabled = false;
             button2.Enabled = true;
         }
 
@@ -227,6 +227,7 @@ namespace Evolution
         {
             timer1.Enabled = false;
             bCreate.Enabled = true;
+            trackBar2.Enabled = true;
         }
     }
 }
