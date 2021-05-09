@@ -14,10 +14,10 @@ namespace Evolution
     {
         private List <Rabbit> item = new List<Rabbit>();
         private List<Rabbit> tempItem;
-        public  int SIZE_SQUARE = 20; //разрешение (иными словами масштаб поля).
-        private const int RABBIT = 15; //не устанавливать меньше 15. индекс кролика на карте
+        public  int SIZE_SQUARE; //разрешение (иными словами масштаб поля).
+        public static int RABBIT = 15; //не устанавливать меньше 15. индекс кролика на карте
         private Graphics graphics;
-        private int [,] field;
+        public static int [,] field;
         private int cols;
         private int rows;
         Random random = new Random();
@@ -53,7 +53,7 @@ namespace Evolution
                 int a = random.Next(0, cols);
                 int b = random.Next(0, rows);
 
-                Rabbit rabbits = new Rabbit(a, b, 4, 5, 10);
+                Rabbit rabbits = new Rabbit(a, b, 4, 5, 10, 2);
                 field[a, b] = RABBIT;
 
                 item.Add(rabbits);
@@ -102,79 +102,26 @@ namespace Evolution
                     if (field[x, y] != RABBIT  && field[x, y] != 1) // значение ОДИН - трава 
                         field[x, y] = random.Next(-100*grace,RABBIT); //второй параметр - плотность роста травы во время эволюции
                                                             //связано с индексом кролика
-
                 }
             }
         }
 
         private void RabbitMove()
         {
+            
             foreach (var i in item)
             {
-
-                int road = 100;
-                int minRoad = 100;
-                int xMin = 0;
-                int yMin = 0;
-                
-                for ( int x = -(i.overview); x <= i.overview; x++)
-                {
-                    for (int y = -(i.overview); y <= i.overview; y++)
-                    {
-                            int col = (i.x + x + cols) % cols;
-                            int row = (i.y + y + rows) % rows;
-                            
-                            if (field[col, row] == 1)
-                                road = Math.Abs(i.x - col) + Math.Abs(i.y - row);
-                            if (minRoad > road )
-                            {
-                                minRoad = road;
-                                xMin = col;
-                                yMin = row;
-                            }
-                    }
-                }
-
-
-                field[i.x, i.y] = 0;
-                int oldX = i.x;
-                int oldY = i.y;
-
-                if (minRoad == 100 || minRoad == 0)
-                {
-                    xMin = random.Next(0, cols);
-                    if (xMin == i.x) xMin++;
-                    yMin = random.Next(0, rows);
-                    if (yMin == i.y) yMin++;
-                }
-
-                if (Math.Abs(xMin-i.x)>Math.Abs(yMin - i.y))
-                {
-                    i.x += (xMin - i.x) / Math.Abs(xMin-i.x);   // пытается делить на нуль !!!! исправить.
-                } 
-                else
-                {
-                    i.y += (yMin - i.y) / Math.Abs(yMin - i.y); // пытается делить на нуль !!!! исправить.
-                }
-
-                if (field[i.x, i.y] == 1)
-                    i.energy -= 1;
-
-                if (field[i.x, i.y] == RABBIT)
-                {
-                    i.x = oldX;
-                    i.y = oldY;
-                    i.move += 1;
-                }
-                    
-                i.move -= 1;
-                field[i.x, i.y] = RABBIT;
+                i.CountMove (cols, rows);
             }
+            
+
+
 
             tempItem = new List<Rabbit>(item);
             float bornabylityView = 0;
             float overviewView = 0;
             float movingView = 0;
+            float speedView = 0;
             foreach (var j in tempItem)
             {
                 if (j.move < 0)
@@ -182,27 +129,26 @@ namespace Evolution
                     item.Remove(j);
                     field[j.x, j.y] = 0;
                 }
-                //j.energy += 1;
+                
                 if (j.energy <= j.bornabylity)
                 {
                     j.energy = 20;
-                    item.Add(new Rabbit(j.x, j.y, j.overview, j.bornabylity, j.moving));
+                    item.Add(new Rabbit(j.x, j.y, j.overview, j.bornabylity, j.moving, j.speed));
                 }
 
                 bornabylityView += j.bornabylity;
                 overviewView += j.overview;
                 movingView += j.moving;
+                speedView += j.speed;
             }
 
-            label2.Text = "Средн. обзорность: " + (overviewView / item.Count).ToString("F");
-            label3.Text = "Средн. размножаемость: " + (bornabylityView / item.Count).ToString("F");
-            label7.Text = "Средн. жизнь: " + (movingView  / item.Count ).ToString("F");
+            label2.Text = "Средн. обзорность: " + (overviewView / item.Count).ToString("F") 
+                      + "\nСредн. размножаемость: " + (bornabylityView / item.Count).ToString("F")
+                      + "\nСредн. жизнь: " + (movingView  / item.Count ).ToString("F")
+                      + "\nСредн. скорость: " + (speedView / item.Count).ToString("F");
         }
 
-        private void Form1_Load(object sender, EventArgs e)
-        {
-            
-        }
+       
 
         private void bStart_Click(object sender, EventArgs e)
         {
@@ -228,6 +174,11 @@ namespace Evolution
             timer1.Enabled = false;
             bCreate.Enabled = true;
             trackBar2.Enabled = true;
+        }
+
+        private void Form1_Load(object sender, EventArgs e)
+        {
+
         }
     }
 }
