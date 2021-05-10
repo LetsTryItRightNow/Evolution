@@ -1,14 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 
 namespace Evolution
 {
-     public class Rabbit
-     {
+    public class Rabbit
+    {
         private static readonly Random random = new Random();
         public int x;
         public int y;
@@ -16,7 +12,7 @@ namespace Evolution
         public int energy = 20;
         public int speed = 1;
         public int move;
-        public int moving; 
+        public int moving;
         public int overview; // ген способности смотреть вокруг.
 
 
@@ -25,15 +21,15 @@ namespace Evolution
             x = X;
             y = Y;
 
-            speedViewCalc (overview, speed);
+            speedViewCalc(overview, speed);
             bornMoveCalc(bornabylity, moving);
-         }
+        }
 
         private void speedViewCalc(int overview, int speed)
         {
             this.overview = overview + random.Next(-1, 2);
             this.speed = speed + random.Next(-1, 2);
-            if (this.overview + 2*this.speed >10) 
+            if (this.overview + 2 * this.speed > 10)
                 speedViewCalc(overview, speed);
 
         }
@@ -42,7 +38,7 @@ namespace Evolution
         {
             this.bornabylity = bornabylity + random.Next(-1, 2);
             this.moving = moving + random.Next(-1, 2);
-            if (this.bornabylity + this.moving >20)
+            if (this.bornabylity + this.moving > 20)
             {
                 bornMoveCalc(bornabylity, moving);
             }
@@ -93,7 +89,7 @@ namespace Evolution
                     x += (xMin - x) / Math.Abs(xMin - x);
                 else
                     y += (yMin - y) / Math.Abs(yMin - y);
-                
+
                 if (Form1.field[x, y] == 1)
                     energy -= 1;
                 if (Form1.field[x, y] == Form1.RABBIT)
@@ -103,11 +99,11 @@ namespace Evolution
                     move += 1;
                 }
 
-                
+
 
                 Form1.field[x, y] = Form1.RABBIT;
             }
             move -= 1;
         }
-     }
+    }
 }

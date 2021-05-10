@@ -1,28 +1,23 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
 using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace Evolution
 {
     public partial class Form1 : Form
     {
-        private List <Rabbit> item = new List<Rabbit>();
+        private List<Rabbit> item = new List<Rabbit>();
         private List<Rabbit> tempItem;
-        public  int SIZE_SQUARE; //разрешение (иными словами масштаб поля).
+        public int SIZE_SQUARE; //разрешение (иными словами масштаб поля).
         public static int RABBIT = 15; //не устанавливать меньше 15. индекс кролика на карте
         private Graphics graphics;
-        public static int [,] field;
+        public static int[,] field;
         private int cols;
         private int rows;
         Random random = new Random();
         private double genCount;
-        
+
 
         public Form1()
         {
@@ -39,7 +34,7 @@ namespace Evolution
             graphics = Graphics.FromImage(pictureBox1.Image);
             cols = pictureBox1.Width / SIZE_SQUARE;
             rows = pictureBox1.Height / SIZE_SQUARE;
-            field = new int [cols, rows];
+            field = new int[cols, rows];
 
             for (int x = 0; x < cols; x++)
             {
@@ -65,7 +60,7 @@ namespace Evolution
 
         private void DrawMap()
         {
-            
+
             pictureBox1.Image = new Bitmap(pictureBox1.Width, pictureBox1.Height);
             graphics = Graphics.FromImage(pictureBox1.Image);
             for (int x = 0; x < cols; x++)
@@ -73,8 +68,8 @@ namespace Evolution
                 for (int y = 0; y < rows; y++)
                 {
                     if (field[x, y] == 1) // значение ОДИН - трава 
-                        graphics.FillRectangle(Brushes.Green, x * SIZE_SQUARE, y * SIZE_SQUARE, SIZE_SQUARE-1,
-                            SIZE_SQUARE-1);
+                        graphics.FillRectangle(Brushes.Green, x * SIZE_SQUARE, y * SIZE_SQUARE, SIZE_SQUARE - 1,
+                            SIZE_SQUARE - 1);
                     if (field[x, y] == RABBIT) // значение  кролика 
 
                         graphics.FillRectangle(Brushes.Red, x * SIZE_SQUARE, y * SIZE_SQUARE, SIZE_SQUARE,
@@ -97,7 +92,7 @@ namespace Evolution
             CreateGrace();
             DrawMap();
 
-            
+
         }
 
         private void CreateGrace()
@@ -107,19 +102,19 @@ namespace Evolution
             {
                 for (int y = 0; y < rows; y++)
                 {
-                    if (field[x, y] != RABBIT  && field[x, y] != 1) // значение ОДИН - трава 
-                        field[x, y] = random.Next(-100*grace,RABBIT); //второй параметр - плотность роста травы во время эволюции
-                                                            //связано с индексом кролика
+                    if (field[x, y] != RABBIT && field[x, y] != 1) // значение ОДИН - трава 
+                        field[x, y] = random.Next(-100 * grace, RABBIT); //второй параметр - плотность роста травы во время эволюции
+                                                                         //связано с индексом кролика
                 }
             }
         }
 
         private void RabbitMove()
         {
-            
+
             foreach (var i in item)
             {
-                i.CountMove (cols, rows);
+                i.CountMove(cols, rows);
             }
 
 
@@ -135,7 +130,7 @@ namespace Evolution
                     item.Remove(j);
                     field[j.x, j.y] = 0;
                 }
-                
+
                 if (j.energy <= j.bornabylity)
                 {
                     j.energy = 20;
@@ -148,13 +143,13 @@ namespace Evolution
                 speedView += j.speed;
             }
 
-            label2.Text = "Средн. обзорность: " + (overviewView / item.Count).ToString("F") 
+            label2.Text = "Средн. обзорность: " + (overviewView / item.Count).ToString("F")
                       + "\nСредн. размножаемость: " + (bornabylityView / item.Count).ToString("F")
-                      + "\nСредн. жизнь: " + (movingView  / item.Count ).ToString("F")
+                      + "\nСредн. жизнь: " + (movingView / item.Count).ToString("F")
                       + "\nСредн. скорость: " + (speedView / item.Count).ToString("F");
         }
 
-       
+
 
         private void bStart_Click(object sender, EventArgs e)
         {
@@ -183,18 +178,18 @@ namespace Evolution
             trackBar2.Enabled = true;
         }
 
-        
+
 
         private void trackBar3_Scroll(object sender, EventArgs e)
         {
-            label5.Text = $"Скорость {trackBar3.Maximum*trackBar3.Minimum/trackBar3.Value}";
+            label5.Text = $"Скорость {trackBar3.Maximum * trackBar3.Minimum / trackBar3.Value}";
         }
 
         private void trackBar1_Scroll(object sender, EventArgs e)
         {
-            label6.Text = $"Рост травы {trackBar1.Maximum * trackBar1.Minimum/trackBar1.Value}";
+            label6.Text = $"Рост травы {trackBar1.Maximum * trackBar1.Minimum / trackBar1.Value}";
         }
 
-        
+
     }
 }
