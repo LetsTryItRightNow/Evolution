@@ -9,30 +9,44 @@ namespace Evolution
 {
      public class Rabbit
      {
-        public Random random = new Random();
+        private static readonly Random random = new Random();
         public int x;
         public int y;
-        public int bornabylity = 5;// ген способности к воспроизведению. (сколько надо травы для нового кролика).
+        public int bornabylity;// ген способности к воспроизведению. (сколько надо травы для нового кролика).
         public int energy = 20;
         public int speed = 1;
         public int move;
         public int moving; 
-        public readonly int overview; // ген способности смотреть вокруг.
+        public int overview; // ген способности смотреть вокруг.
 
 
         public Rabbit(int X, int Y, int overview, int bornabylity, int moving, int speed)
         {
             x = X;
             y = Y;
-            this.overview = overview + random.Next(-1,2);
-            if (overview >= 16)
-                this.overview = 16;
-            this.bornabylity = bornabylity + random.Next(-1, 2);
-            if (bornabylity >= 19)
-                this.bornabylity = 19;
-            this.moving = moving + random.Next(-1, 2);
-            move = moving  * 10;
+
+            speedViewCalc (overview, speed);
+            bornMoveCalc(bornabylity, moving);
+         }
+
+        private void speedViewCalc(int overview, int speed)
+        {
+            this.overview = overview + random.Next(-1, 2);
             this.speed = speed + random.Next(-1, 2);
+            if (this.overview + 2*this.speed >10) 
+                speedViewCalc(overview, speed);
+
+        }
+
+        private void bornMoveCalc(int bornabylity, int moving)
+        {
+            this.bornabylity = bornabylity + random.Next(-1, 2);
+            this.moving = moving + random.Next(-1, 2);
+            if (this.bornabylity + this.moving >20)
+            {
+                bornMoveCalc(bornabylity, moving);
+            }
+            move = this.moving * 10;
         }
 
         public void CountMove(int cols, int rows)
@@ -89,10 +103,11 @@ namespace Evolution
                     move += 1;
                 }
 
-                move -= 1;
+                
 
                 Form1.field[x, y] = Form1.RABBIT;
             }
+            move -= 1;
         }
      }
 }

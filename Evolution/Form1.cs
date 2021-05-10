@@ -21,16 +21,17 @@ namespace Evolution
         private int cols;
         private int rows;
         Random random = new Random();
+        private double genCount;
         
 
         public Form1()
         {
             InitializeComponent();
-            
         }
 
         private void CreateField()
         {
+            genCount = 0;
             SIZE_SQUARE = trackBar2.Value;
             button1.Enabled = true;
             item.Clear();
@@ -53,7 +54,7 @@ namespace Evolution
                 int a = random.Next(0, cols);
                 int b = random.Next(0, rows);
 
-                Rabbit rabbits = new Rabbit(a, b, 4, 5, 10, 2);
+                Rabbit rabbits = new Rabbit(a, b, 4, 2, 6, 2);
                 field[a, b] = RABBIT;
 
                 item.Add(rabbits);
@@ -64,6 +65,7 @@ namespace Evolution
 
         private void DrawMap()
         {
+            
             pictureBox1.Image = new Bitmap(pictureBox1.Width, pictureBox1.Height);
             graphics = Graphics.FromImage(pictureBox1.Image);
             for (int x = 0; x < cols; x++)
@@ -81,6 +83,10 @@ namespace Evolution
             }
 
             label1.Text = "Количество кроликов: " + item.Count.ToString();
+            if (item.Count <= 0)
+            {
+                label2.Text = "ВСЕ КРОЛИКИ СДОХЛИ\nПРИРОДА ЖЕСТОКА";
+            }
 
         }
 
@@ -90,6 +96,8 @@ namespace Evolution
             RabbitMove();
             CreateGrace();
             DrawMap();
+
+            
         }
 
         private void CreateGrace()
@@ -113,8 +121,6 @@ namespace Evolution
             {
                 i.CountMove (cols, rows);
             }
-            
-
 
 
             tempItem = new List<Rabbit>(item);
@@ -157,6 +163,7 @@ namespace Evolution
 
         private void timer1_Tick(object sender, EventArgs e)
         {
+            Text = $"Evolution [GENERATION {++genCount}]";
             NextGeneration();
             timer1.Interval = trackBar3.Value;
             bCreate.Enabled = false;
@@ -176,9 +183,18 @@ namespace Evolution
             trackBar2.Enabled = true;
         }
 
-        private void Form1_Load(object sender, EventArgs e)
-        {
+        
 
+        private void trackBar3_Scroll(object sender, EventArgs e)
+        {
+            label5.Text = $"Скорость {trackBar3.Maximum*trackBar3.Minimum/trackBar3.Value}";
         }
+
+        private void trackBar1_Scroll(object sender, EventArgs e)
+        {
+            label6.Text = $"Рост травы {trackBar1.Maximum * trackBar1.Minimum/trackBar1.Value}";
+        }
+
+        
     }
 }

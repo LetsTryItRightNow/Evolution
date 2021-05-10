@@ -90,9 +90,9 @@ namespace Evolution
             this.label6.Font = new System.Drawing.Font("Microsoft Sans Serif", 10.2F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.label6.Location = new System.Drawing.Point(27, 301);
             this.label6.Name = "label6";
-            this.label6.Size = new System.Drawing.Size(116, 20);
+            this.label6.Size = new System.Drawing.Size(142, 20);
             this.label6.TabIndex = 11;
-            this.label6.Text = "Рост травы";
+            this.label6.Text = "Рост травы 10";
             // 
             // label5
             // 
@@ -100,9 +100,9 @@ namespace Evolution
             this.label5.Font = new System.Drawing.Font("Microsoft Sans Serif", 10.2F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.label5.Location = new System.Drawing.Point(27, 232);
             this.label5.Name = "label5";
-            this.label5.Size = new System.Drawing.Size(97, 20);
+            this.label5.Size = new System.Drawing.Size(123, 20);
             this.label5.TabIndex = 10;
-            this.label5.Text = "Скорость";
+            this.label5.Text = "Скорость 62";
             // 
             // trackBar3
             // 
@@ -115,6 +115,7 @@ namespace Evolution
             this.trackBar3.TabIndex = 9;
             this.trackBar3.Tag = "";
             this.trackBar3.Value = 40;
+            this.trackBar3.Scroll += new System.EventHandler(this.trackBar3_Scroll);
             // 
             // label4
             // 
@@ -148,11 +149,12 @@ namespace Evolution
             this.trackBar1.Size = new System.Drawing.Size(187, 56);
             this.trackBar1.TabIndex = 6;
             this.trackBar1.Value = 10;
+            this.trackBar1.Scroll += new System.EventHandler(this.trackBar1_Scroll);
             // 
             // label2
             // 
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(3, 396);
+            this.label2.Location = new System.Drawing.Point(3, 402);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(176, 68);
             this.label2.TabIndex = 4;
@@ -162,7 +164,7 @@ namespace Evolution
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(3, 375);
+            this.label1.Location = new System.Drawing.Point(3, 381);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(159, 17);
             this.label1.TabIndex = 3;
